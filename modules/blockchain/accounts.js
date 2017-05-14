@@ -2,6 +2,7 @@ var util = require("util");
 var crypto = require("crypto");
 var bignum = require("bignumber");
 var extend = require("extend");
+var addressHelper = require('../helpers/address.js');
 
 var private = {}, self = null,
 	library = null, modules = null;
@@ -126,14 +127,7 @@ Accounts.prototype.getExecutor = function (cb) {
 }
 
 Accounts.prototype.generateAddressByPublicKey = function (publicKey) {
-	var publicKeyHash = crypto.createHash("sha256").update(publicKey, "hex").digest();
-	var temp = new Buffer(8);
-	for (var i = 0; i < 8; i++) {
-		temp[i] = publicKeyHash[7 - i];
-	}
-
-	var address = bignum.fromBuffer(temp).toString();
-	return address;
+	return addressHelper.generateBase58CheckAddress(publicKey)
 }
 
 Accounts.prototype.getAccount = function (filter, cb, scope) {
