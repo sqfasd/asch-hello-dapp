@@ -49,10 +49,7 @@ Block.prototype.getBytes = function (block, withSignature) {
 	}
 
 	if (block.pointId) {
-		pb = bignum(block.pointId).toBuffer({ size: "8" });
-		for (var i = 0; i < 8; i++) {
-			bb.writeByte(pb[i]);
-		}
+		bb.writeString(block.pointId)
 	}
 
 	if (block.pointHeight) {
