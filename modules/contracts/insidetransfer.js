@@ -28,8 +28,7 @@ InsideTransfer.prototype.calculateFee = function (trs) {
 }
 
 InsideTransfer.prototype.verify = function (trs, sender, cb, scope) {
-	var isAddress = /^[0-9]+$/g;
-	if (!trs.recipientId || !isAddress.test(trs.recipientId)) {
+	if (!trs.recipientId) {
 		return cb("Invalid recipient");
 	}
 
