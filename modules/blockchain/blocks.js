@@ -79,6 +79,10 @@ private.popLastBlock = function (oldLastBlock, cb) {
 }
 
 private.verify = function (block, cb, scope) {
+	if (!block) {
+	  console.log('verify block undefined');
+	  return cb();
+	}
 	if (block.id == private.genesisBlock.id) {
 		try {
 			var valid = modules.logic.block.verifySignature(block);
@@ -612,7 +616,7 @@ Blocks.prototype.loadBlocksPeer = function (peer, cb, scope) {
 			return cb(err);
 		}
 
-		var blocks = self.readDbRows(res.body.response);
+		var blocks = self.readDbRows(res.body.body);
 
 		async.eachSeries(blocks, function (block, cb) {
 			private.processBlock(block, cb, scope);
@@ -695,16 +699,16 @@ Blocks.prototype.getCommonBlock = function (height, peer, cb) {
 						return next(err || "Failed to find common block");
 					}
 
-					if (!data.body.response) {
+					if (!data.body) {
 						return next("Failed to find common block");
 					}
 
 					var condition = {
-						id: data.body.response.id,
-						height: data.body.response.height
+						id: data.body.id,
+						height: data.body.height
 					};
-					if (data.body.response.prevBlockId) {
-						condition.prevBlockId = data.body.response.prevBlockId
+					if (data.body.prevBlockId) {
+						condition.prevBlockId = data.body.prevBlockId
 					}
 					modules.api.sql.select({
 						table: "blocks",
@@ -716,7 +720,7 @@ Blocks.prototype.getCommonBlock = function (height, peer, cb) {
 						}
 
 						if (rows[0].count) {
-							commonBlock = data.body.response;
+							commonBlock = data.body;
 						}
 						next();
 					});

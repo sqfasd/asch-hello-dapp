@@ -31,6 +31,7 @@ private.findUpdate = function (lastBlock, peer, cb) {
 	var self = this;
 
 	modules.blockchain.blocks.getCommonBlock(lastBlock.height, peer, function (err, commonBlock) {
+		commonBlock = commonBlock.body
 		if (err || !commonBlock) {
 			return cb(err);
 		}
@@ -114,7 +115,7 @@ private.blockSync = function (cb) {
 
 		modules.api.transport.getRandomPeer("get", "/blocks/height", null, function (err, res) {
 			if (!err && res.body && res.body.success) {
-				if (bignum(lastBlock.height).lt(res.body.response)) {
+				if (bignum(lastBlock.height).lt(res.body.body)) {
 					console.log("Received blocks from peer: " + res.peer.ip + ":" + res.peer.port);
 					private.findUpdate(lastBlock, res.peer, cb);
 				} else {
